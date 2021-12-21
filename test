@@ -1,0 +1,96 @@
+// 1
+// Создать абстрактный класс “AClass” у которого будет свойство “Numbers” типа Array, 
+// который будет содержать n натуральных чисел. Также AClass должен иметь метод “fill”, 
+// который заполняет массив Numbers случайными числами; метод “factorial”, 
+// который возвращает массив факториалов из массива Numbers; 
+// и абстрактный метод “sort”. Конструктор принимает один параметр “n” и вызывает метод “fill”. 
+// Метод “fill” можно вызывать только из методов класса “AClass”. Метод “factorial” может вызываться 
+// из класса AClass и из дочерних классов. Реализовать два дочерних класса “Class1” и “Class2” с 
+// методом “sort” который сортирует массив Numbers, 
+// а затем выдает массив факториалов. Алгоритм сортировки в классах “Class1” и “Class2” должен различаться.
+
+/**
+ * Abstract Class Aclass.
+ *
+ * @class Aclass
+ */
+class AClass {
+  constructor (n) {
+    if (this.constructor == AClass) {
+      throw new Error("Abstract classes can't be instantiated.");
+    }
+    this.numbers = n;
+    this.#fill(n)
+  }
+
+  #fill (n) {
+    return this.numbers = [...Array(n)].map(() => Math.floor(Math.random() * 100));
+  }
+
+  factorial () {
+    let nums = this.numbers;
+    return nums = Array.from(this.numbers).map(function factorializeSingleNumber(num) {
+      if (num == 0 || num == 1) return 1
+      else return num * factorializeSingleNumber(num - 1)
+    })
+  }
+
+  sort(){
+     throw new Error("Abstract Method has no implementation");
+  }
+  
+}
+
+class Class1 extends AClass {
+  sort() {
+    let arr = this.numbers;
+    var n = arr.length;
+    for (var i = 0; i < n-1; i++) {
+      for (var j = 0; j < n-1-i; j++) {
+        if (arr[j+1] < arr[j]) {
+          var t = arr[j+1]; 
+          arr[j+1] = arr[j]; 
+          arr[j] = t; 
+        }
+      }
+    }   
+    arr = this.factorial();
+    return arr;
+  }
+}
+
+class Class2 extends AClass {
+  sort() {
+    let arr = this.numbers;
+    var n = arr.length;
+    for (var i = 0; i < n-1; i++) { 
+      var min = i;
+      for (var j = i+1; j < n; j++) {
+        if (arr[j] < arr[min]) min = j; 
+      } 
+      var t = arr[min]; 
+      arr[min] = arr[i]; 
+      arr[i] = t;
+    }        
+    arr = this.factorial();
+    return arr;
+  }
+}
+
+const b = new Class1(7);
+b.sort();
+
+const c = new Class2(10);
+c.sort();
+
+
+// 2
+// Таблица Students имеет поля StudentId, FirstName, LastName, Group и 
+// содержит информацию о студентах института. Таблица Exams имеет поля 
+// StudentId, ExamName, Result и содержит результаты экзаменов студентов.
+// a) написать SQL запрос, который выводит имена и фамилии студентов у 
+// которых больше двух экзаменов с результатом меньше 3.
+SELECT FirstName, LastName FROM students WHERE id IN (SELECT StudentId FROM exams WHERE result < 3 group by StudentId having count(*) > 2);
+
+// b) написать SQL запрос, который выводит название групп, в которых таких студентов больше 10
+SELECT GroupN FROM students WHERE id IN (SELECT StudentId FROM exams WHERE result < 3 group by StudentId having count(*) > 2) GROUP BY GroupN HAVING count(*)>10;
